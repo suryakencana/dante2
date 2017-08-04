@@ -5,8 +5,13 @@ import ReactDOM from 'react-dom'
 import { Entity, RichUtils, AtomicBlockUtils, EditorBlock } from 'draft-js'
 
 import { updateDataOfBlock } from '../../model/index.js'
+import utils from '../utils.js'
+const { isYoutube, getYoutubeSrc } = utils;
+
 
 import axios from "axios"
+
+const YOUTUBE_PREFIX = 'https://www.youtube.com/embed/';
 
 export default class VideoBlock extends React.Component {
   constructor(props) {
@@ -42,19 +47,29 @@ export default class VideoBlock extends React.Component {
       return
     }
     // ensure data isnt already loaded
-    if (!this.dataForUpdate().endpoint && !this.dataForUpdate().provisory_text) {
+    if (!this.dataForUpdate().provisory_text) {
       return
     }
+    let src = this.getSrc(this.dataForUpdate().provisory_text);
+    let data = {html: `<iframe src="${src}" frameBorder="0" allowFullScreen style="width: 100%; height: 480px;"></iframe>`};
 
-    return axios({
-      method: 'get',
-      url: `${ this.dataForUpdate().endpoint }${ this.dataForUpdate().provisory_text }&scheme=https`
-    }).then(result => {
-      return this.setState({ embed_data: result.data } //JSON.parse(data.responseText)
-      , this.updateData)
-    }).catch(error => {
-      return console.log("TODO: error")
-    })
+    return this.setState({ embed_data: data }, this.updateData);
+    // return axios({
+    //   method: 'get',
+    //   url: `${ this.dataForUpdate().endpoint }${ this.dataForUpdate().provisory_text }`
+    // }).then(result => {
+    //   return this.setState({ embed_data: result.data } //JSON.parse(data.responseText)
+    //   , this.updateData)
+    // }).catch(error => {
+    //   return console.log("TODO: error")
+    // })
+  }
+
+  getSrc(src) {
+     if (isYoutube(src)) {
+      const { srcID } = getYoutubeSrc(src);
+      return `${YOUTUBE_PREFIX}${srcID}`;
+    }
   }
 
   classForImage() {

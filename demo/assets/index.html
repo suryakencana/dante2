@@ -34,8 +34,28 @@
 
     <div class="danteArticle"></div>
     <div id="app"></div>
+    <!-- Sorry for editing :-) -->
+    <div class="content">
+      <article class="postArticle">
+        <div class="postContent">
+          <div class="notesSource">
+            <div class="editor" class="postField postField--body">
+              <section class="section--first section--last">
+                <div class="section-divider layoutSingleColumn">
+                  <hr class="section-divider" />
+                </div>
+                <div class="section-content">
+                  <div id="richEditor" class="richEditor section-inner layoutSingleColumn"></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
 
     <script type="text/javascript">
+      var div = document.getElementById('richEditor');
       document.addEventListener('DOMContentLoaded', function(){
         editor = new Dante(
           {
@@ -51,6 +71,8 @@
                   editor_content: JSON.stringify(content),
                   text_content: ctx.getTextFromEditor(content)
                 });
+                console.log(editor.emitHTML2(content));
+                div.innerHTML = editor.emitHTML2(content);
               },
             }
           }

@@ -24,6 +24,18 @@ import {
   resetBlockWithType, 
   addNewBlockAt } from '../model/index.js'
 
+// Sorry for editing
+import Link from './decorators/link'
+import findEntities from '../utils/find_entities'
+
+import { 
+  convertFromRaw, 
+  CompositeDecorator,  
+  EditorState, 
+} from 'draft-js'
+
+import {stateToHTML} from 'draft-js-export-html';  
+
 class Dante {
   constructor(options) {
     if (options == null) {
@@ -36,6 +48,10 @@ class Dante {
 
     this.options = config.mergeDeep(options).toJS()
     console.log(this.options)
+    this.decorator = new CompositeDecorator([{
+      strategy: findEntities.bind(null, 'LINK', this),
+      component: Link
+    }])
   }
 
   defaultOptions(options) {
@@ -140,8 +156,8 @@ class Dante {
         insert_block: "video"
       },
       options: {
-        endpoint: `//api.embed.ly/1/oembed?key=${ options.api_key }&url=`,
-        placeholder: 'Paste a YouTube, Vine, Vimeo, or other video link, and press Enter',
+        endpoint: `//www.youtube.com/embed/`,
+        placeholder: 'Paste a YouTube and press Enter',
         caption: 'Type caption for embed (optional)'
       },
 
@@ -283,6 +299,74 @@ class Dante {
 
   getContent() {
     return this.options.content
+  }
+
+  /*
+  * Sorry for editing :-)
+  */
+  emitHTML2(content) {
+    const new_content = convertFromRaw(content);
+    console.log(new_content);
+    let editorState = EditorState.createWithContent(new_content, this.decorator);
+
+    let options = {
+      blockRenderers: {
+        image: (block) => {
+          let data = block.getData();
+          const { direction, width, height } = block.getData().toJS()
+          let imgAlign;
+          switch (direction) {
+            case "left":
+              imgAlign = "graf--layoutOutsetLeft";
+              break;
+            case "center":
+              imgAlign = "";
+              break;
+            case "wide":
+              imgAlign = "sectionLayout--fullWidth";
+              break;
+            case "fill":
+              imgAlign = "graf--layoutFillWidth";
+              break;
+          }
+
+  
+          return `<figure class="graf graf--figure ${imgAlign}">
+          <div class="aspectRatioPlaceholder is-locked" style="max-width: ${width}px; max-height: ${height}px;">
+          <div class="aspect-ratio-fill" style="padding-bottom: 91.0204%;"></div>
+          <img src="${data.get('url')}" width="${width}" height="${height}" class="graf-image"/>
+          </div>
+          <figcaption class="imageCaption">
+            <div>
+              <span>
+                <span data-text="true">${block.getText()}</span>
+              </span>
+            </div>
+          </figcaption>
+          </figure>`;         
+        },
+        video: (block) => {
+          let data = block.getData();
+          console.log(data);
+          let html = data.get('embed_data');
+          let iframe = (typeof(html.get) === "function" ) ? html.get('html'): html['html'];
+          return `<figure class="graf--figure graf--iframe">
+          <figure class="graf--figure graf--iframe graf--first" tabindex="0">
+          <div class="iframeContainer">${iframe}</div>
+          <figcaption class="imageCaption">
+            <div>
+              <span>
+                <span data-text="true">${block.getText()}</span>
+              </span>
+            </div>
+          </figcaption>
+          </figure>
+        </figure>`;
+        },
+      },
+    };
+    
+    return stateToHTML(editorState.getCurrentContent(), options);
   }
 
   render() {

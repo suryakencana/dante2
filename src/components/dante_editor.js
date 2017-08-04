@@ -325,10 +325,10 @@ class DanteEditor extends React.Component {
 
       case "atomic":
 
-        const entity = block.getEntityAt(0)
-        const entity_type = Entity.get(entity).getType()
+      const entity = block.getEntityAt(0)
+      const entity_type = Entity.get(entity).getType()
 
-        break
+      break
     }
 
     if (this.renderableBlocks().includes(block.getType())) {
@@ -439,20 +439,20 @@ class DanteEditor extends React.Component {
 
     switch (currentBlock.getType()) {
       case "image":case "video":case "placeholder":
-        const newContent = Modifier.replaceText(editorState.getCurrentContent(), new SelectionState({
-          anchorKey: currentBlock.getKey(),
-          anchorOffset: 0,
-          focusKey: currentBlock.getKey(),
-          focusOffset: 2
-        }), text)
+      const newContent = Modifier.replaceText(editorState.getCurrentContent(), new SelectionState({
+        anchorKey: currentBlock.getKey(),
+        anchorOffset: 0,
+        focusKey: currentBlock.getKey(),
+        focusOffset: 2
+      }), text)
 
-        editorState = EditorState.push(editorState, newContent, 'replace-text')
+      editorState = EditorState.push(editorState, newContent, 'replace-text')
 
-        this.onChange(editorState)
+      this.onChange(editorState)
 
-        return true
+      return true
       default:
-        return false
+      return false
     }
   }
 
@@ -463,8 +463,8 @@ class DanteEditor extends React.Component {
     // TODO: make this configurable
     switch (currentBlock.getType()) {
       case "image":case "video":case "placeholder":
-        return this.handleTXTPaste(text, html)
-        break
+      return this.handleTXTPaste(text, html)
+      break
     }
 
     const newContentState = customHTML2Content(html, this.extendedBlockRenderMap)
@@ -561,11 +561,11 @@ class DanteEditor extends React.Component {
         //TODO turn this in configurable
         switch (blockType) {
           case "header-one":
-            this.onChange(resetBlockWithType(editorState, "unstyled"))
-            return true
-            break
+          this.onChange(resetBlockWithType(editorState, "unstyled"))
+          return true
+          break
           default:
-            return false
+          return false
         }
       }
 
@@ -579,7 +579,7 @@ class DanteEditor extends React.Component {
             this.state.editorState.getSelection())
 
           const newEditorState = EditorState.push(this.state.editorState, 
-                                                  newContent, 'insert-characters')
+            newContent, 'insert-characters')
           this.onChange(newEditorState)
 
           setTimeout(() => {
@@ -861,70 +861,70 @@ class DanteEditor extends React.Component {
   render() {
     return (
       <div id="content" suppressContentEditableWarning={ true }>
-        <article className="postArticle">
-          <div className="postContent">
-            <div className="notesSource">
-              <div id="editor" className="postField postField--body">
-                <section className="section--first section--last">
-                  <div className="section-divider layoutSingleColumn">
-                    <hr className="section-divider" />
-                  </div>
-                  <div className="section-content">
-                    <div ref="richEditor" className="section-inner layoutSingleColumn"
-                        onClick={ this.focus }>
-                      <Editor
-                        blockRendererFn={ this.blockRenderer }
-                        editorState={ this.state.editorState }
-                        onChange={ this.onChange }
-                        onUpArrow={ this.handleUpArrow }
-                        onDownArrow={ this.handleDownArrow }
-                        handleReturn={ this.handleReturn }
-                        blockRenderMap={ this.state.blockRenderMap }
-                        blockStyleFn={ this.blockStyleFn }
-                        handlePastedText={ this.handlePasteText }
-                        handlePastedFiles={ this.handlePasteImage }
-                        handleDroppedFiles={ this.handleDroppedFiles }
-                        handleKeyCommand={ this.handleKeyCommand }
-                        keyBindingFn={ this.KeyBindingFn }
-                        handleBeforeInput={ this.handleBeforeInput }
-                        readOnly={ this.state.read_only }
-                        placeholder={ this.props.config.body_placeholder }
-                        ref="editor"
-                      />
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-          </div>
-        </article>
-        {
-          this.tooltips.map( (o, i) => {
-            return (
-              <o.component
-                ref={ o.ref }
-                key={ i }
-                editor={ this }
-                editorState={ this.state.editorState }
-                onChange={ this.onChange }
-                configTooltip={ o }
-                widget_options={ o.widget_options }
-                showPopLinkOver={ this.showPopLinkOver }
-                hidePopLinkOver={ this.hidePopLinkOver }
-                handleOnMouseOver={ this.handleShowPopLinkOver }
-                handleOnMouseOut={ this.handleHidePopLinkOver }
-              />
+      <article className="postArticle">
+      <div className="postContent">
+      <div className="notesSource">
+      <div id="editor" className="postField postField--body">
+      <section className="section--first section--last">
+      <div className="section-divider layoutSingleColumn">
+      <hr className="section-divider" />
+      </div>
+      <div className="section-content">
+      <div ref="richEditor" className="section-inner layoutSingleColumn"
+      onClick={ this.focus }>
+      <Editor
+      blockRendererFn={ this.blockRenderer }
+      editorState={ this.state.editorState }
+      onChange={ this.onChange }
+      onUpArrow={ this.handleUpArrow }
+      onDownArrow={ this.handleDownArrow }
+      handleReturn={ this.handleReturn }
+      blockRenderMap={ this.state.blockRenderMap }
+      blockStyleFn={ this.blockStyleFn }
+      handlePastedText={ this.handlePasteText }
+      handlePastedFiles={ this.handlePasteImage }
+      handleDroppedFiles={ this.handleDroppedFiles }
+      handleKeyCommand={ this.handleKeyCommand }
+      keyBindingFn={ this.KeyBindingFn }
+      handleBeforeInput={ this.handleBeforeInput }
+      readOnly={ this.state.read_only }
+      placeholder={ this.props.config.body_placeholder }
+      ref="editor"
+      />
+      </div>
+      </div>
+      </section>
+      </div>
+      </div>
+      </div>
+      </article>
+      {
+        this.tooltips.map( (o, i) => {
+          return (
+            <o.component
+            ref={ o.ref }
+            key={ i }
+            editor={ this }
+            editorState={ this.state.editorState }
+            onChange={ this.onChange }
+            configTooltip={ o }
+            widget_options={ o.widget_options }
+            showPopLinkOver={ this.showPopLinkOver }
+            hidePopLinkOver={ this.hidePopLinkOver }
+            handleOnMouseOver={ this.handleShowPopLinkOver }
+            handleOnMouseOut={ this.handleHidePopLinkOver }
+            />
             )
-          })
-        }
-        {
-          this.state.debug
-          ? <Debug locks={ this.state.locks } editor={ this } />
-          : undefined
-        }
+        })
+      }
+      {
+        this.state.debug
+        ? <Debug locks={ this.state.locks } editor={ this } />
+        : undefined
+      }
       </div>
 
-    )
+      )
   }
 }
 
